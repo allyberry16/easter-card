@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium Easter Card</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 12px;
+      overflow: hidden;
+      font-family: "Georgia", "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0) 35%),
+        linear-gradient(180deg, #fbe7f1 0%, #fff7e8 45%, #f4fde9 100%);
+      position: relative;
+    }
+
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .orb1 {
+      width: 220px;
+      height: 220px;
+      background: #ffd7ea;
+      top: 6%;
+      left: 6%;
+    }
+
+    .orb2 {
+      width: 240px;
+      height: 240px;
+      background: #fff0b8;
+      bottom: 6%;
+      right: 6%;
+    }
+
+    .card {
+      width: min(92vw, 460px);
+      max-height: 92vh;
+      position: relative;
+      border-radius: 32px;
+      padding: 26px 22px;
+      background: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.78);
+      box-shadow:
+        0 24px 60px rgba(126, 84, 106, 0.16),
+        inset 0 1px 0 rgba(255,255,255,0.95);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.32), rgba(255,255,255,0.08));
+      pointer-events: none;
+    }
+
+    .front,
+    .message {
+      position: relative;
+      z-index: 2;
+    }
+
+    .symbol {
+      text-align: center;
+      font-size: 1.9rem;
+      margin-top: 2px;
+    }
+
+    .title-glow {
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(255,215,235,0.85), rgba(255,215,235,0));
+      position: absolute;
+      left: 50%;
+      top: -6px;
+      transform: translateX(-50%);
+      filter: blur(10px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      margin: 8px 0 0;
+      color: #9f215f;
+      font-size: 2.15rem;
+      line-height: 1.12;
+      text-shadow: 0 2px 12px rgba(255,255,255,0.7);
+    }
+
+    .subtitle {
+      position: relative;
+      z-index: 1;
+      margin: 14px auto 0;
+      max-width: 355px;
+      text-align: center;
+      color: #5e5056;
+      line-height: 1.75;
+      font-size: 1rem;
+    }
+
+    .divider {
+      width: 72px;
+      height: 3px;
+      margin: 18px auto 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #f4bfd8, #f7e2a6, #d8efb9);
+    }
+
+    .button-area {
+      position: relative;
+      width: 100%;
+      height: 245px;
+      margin-top: 26px;
+    }
+
+    .btn {
+      position: absolute;
+      border: none;
+      border-radius: 999px;
+      padding: 15px 24px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition:
+        transform 0.16s ease,
+        box-shadow 0.22s ease,
+        left 0.08s linear,
+        top 0.08s linear,
+        opacity 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    #yesBtn {
+      left: 50%;
+      top: 20px;
+      transform: translateX(-50%) scale(1);
+      background: linear-gradient(135deg, #ff6ea7, #ff94bf);
+      color: white;
+      box-shadow:
+        0 12px 28px rgba(255, 110, 167, 0.25),
+        0 0 20px rgba(255, 148, 191, 0.18);
+      z-index: 2;
+    }
+
+    #noBtn {
+      left: 50%;
+      top: 105px;
+      transform: translateX(-50%) scale(1);
+      background: rgba(255,255,255,0.96);
+      color: #a22b64;
+      border: 1.5px solid #f3c7d9;
+      box-shadow: 0 10px 20px rgba(162, 43, 100, 0.08);
+      z-index: 3;
+    }
+
+    .message {
+      display: none;
+      height: auto;
+      justify-content: center;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message-box {
+      border-radius: 28px;
+      padding: 24px 20px 20px;
+      background:
+        linear-gradient(180deg, rgba(255,247,251,0.97), rgba(255,252,243,0.97));
+      border: 1px solid rgba(242, 201, 221, 0.65);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.92),
+        0 14px 34px rgba(170, 121, 145, 0.08);
+      text-align: center;
+    }
+
+    .cross-glow {
+      font-size: 1.55rem;
+      margin-bottom: 8px;
+      text-shadow: 0 0 16px rgba(255, 218, 124, 0.65);
+    }
+
+    .message-box h2 {
+      margin: 0 0 12px;
+      color: #9f215f;
+      font-size: 1.85rem;
+      line-height: 1.2;
+    }
+
+    .message-box p {
+      margin: 10px 0;
+      color: #4d4347;
+      line-height: 1.75;
+      font-size: 1.02rem;
+    }
+
+    .footer-row {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .name {
+      color: #8f1f57;
+      font-weight: 700;
+      font-size: 1rem;
+      font-family: "Segoe UI", sans-serif;
+      text-align: left;
+    }
+
+    #musicToggleBtn {
+      flex-shrink: 0;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      min-width: 42px;
+      height: 38px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #fff2f8, #fff9ea);
+      color: #9f215f;
+      border: 1px solid rgba(242, 201, 221, 0.8);
+      box-shadow: 0 8px 18px rgba(170, 121, 145, 0.08);
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    .bounce {
+      animation: bounceMove 0.16s ease;
+    }
+
+    @keyframes bounceMove {
+      0% { transform: scale(var(--no-scale, 1)); }
+      40% { transform: scale(calc(var(--no-scale, 1) + 0.09)); }
+      100% { transform: scale(var(--no-scale, 1)); }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .floating {
+      position: absolute;
+      bottom: -50px;
+      pointer-events: none;
+      user-select: none;
+      opacity: 0.8;
+      animation: floatUp linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.85;
+      }
+      100% {
+        transform: translateY(-120vh) rotate(15deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 14px 10px;
+      }
+
+      .card {
+        width: 100%;
+        max-height: 94vh;
+        padding: 22px 16px;
+        border-radius: 26px;
+      }
+
+      h1 {
+        font-size: 1.9rem;
+      }
+
+      .subtitle {
+        font-size: 0.96rem;
+      }
+
+      .button-area {
+        height: 230px;
+      }
+
+      .btn {
+        font-size: 0.94rem;
+        padding: 13px 18px;
+      }
+
+      .message-box {
+        padding: 20px 16px 18px;
+      }
+
+      .message-box h2 {
+        font-size: 1.65rem;
+      }
+
+      .message-box p {
+        font-size: 0.97rem;
+        line-height: 1.68;
+      }
+
+      .footer-row {
+        gap: 10px;
+      }
+
+      .name {
+        font-size: 0.95rem;
+      }
+
+      #musicToggleBtn {
+        height: 36px;
+        padding: 9px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="bgMusic" preload="auto" loop>
+    <source src="C:\Users\HP\Downloads\hallelujah.mpeg" type="audio/mpeg">
+  </audio>
+
+  <div class="glow-orb orb1"></div>
+  <div class="glow-orb orb2"></div>
+
+  <div class="card">
+    <div id="front" class="front">
+      <div class="title-glow"></div>
+      <div class="symbol">✝️ 🌸 ✨</div>
+      <h1>He Is Risen</h1>
+      <div class="divider"></div>
+      <p class="subtitle">
+       Hi, it’s Alice 🌸 I wanted to share a special Easter message with you,
+  centered on Christ's hope, joy, and the beauty of His resurrection.
+Open it whenever you’re ready and receive this little blessing with comfort and peace.
+      </p>
+
+      <div class="button-area" id="buttonArea">
+        <button id="yesBtn" class="btn">Open the message 💖</button>
+        <button id="noBtn" class="btn">No</button>
+      </div>
+    </div>
+
+    <div id="message" class="message">
+      <div class="message-box">
+        <div class="cross-glow">✝️</div>
+        <h2>Happy Easter</h2>
+        <p>
+          Christ is risen, and His resurrection is the beautiful promise
+          that hope is alive, grace is real, and love has won.
+        </p>
+        <p>
+          May your heart be filled with peace, your spirit with joy,
+          and your days with the comfort and light of His presence.
+        </p>
+        <p>
+          May this Easter draw you closer to Jesus Christ
+          and remind you of the blessing, strength, and new life found in Him.
+        </p>
+
+        <div class="footer-row">
+          <div class="name">From Alice Ruko 🌸</div>
+          <button id="musicToggleBtn" type="button">⏸</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const front = document.getElementById("front");
+    const message = document.getElementById("message");
+    const buttonArea = document.getElementById("buttonArea");
+    const bgMusic = document.getElementById("bgMusic");
+
+    const messages = [
+      "No",
+      "Are you sure?",
+      "It is Easter",
+      "It is about Christ",
+      "A message of hope",
+      "A message of joy",
+      "One blessing awaits",
+      "Try to catch me"
+    ];
+
+    let count = 0;
+    let escapeMode = false;
+    let yesScale = 1;
+    let noScale = 1;
+    let escapeCooldown = false;
+
+    function setNoPosition(x, y) {
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+      noBtn.style.transform = `scale(${noScale})`;
+    }
+
+    function getAreaBounds() {
+      const areaRect = buttonArea.getBoundingClientRect();
+      const btnWidth = noBtn.offsetWidth;
+      const btnHeight = noBtn.offsetHeight;
+
+      return {
+        maxX: Math.max(areaRect.width - btnWidth, 6),
+        maxY: Math.max(areaRect.height - btnHeight, 6)
+      };
+    }
+
+    function randomFarPosition(fromPoint = null) {
+      const { maxX, maxY } = getAreaBounds();
+      let bestX = 0;
+      let bestY = 0;
+      let bestDistance = -1;
+
+      for (let i = 0; i < 30; i++) {
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
+
+        if (!fromPoint) {
+          bestX = x;
+          bestY = y;
+          continue;
+        }
+
+        const dx = x - fromPoint.x;
+        const dy = y - fromPoint.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist > bestDistance) {
+          bestDistance = dist;
+          bestX = x;
+          bestY = y;
+        }
+      }
+
+      return { x: bestX, y: bestY };
+    }
+
+    function escapeNoButton(fromPoint = null) {
+      if (escapeCooldown) return;
+      escapeCooldown = true;
+
+      noScale = Math.max(0.62, noScale - 0.06);
+      noBtn.style.setProperty("--no-scale", noScale);
+
+      const nextPos = randomFarPosition(fromPoint);
+      setNoPosition(nextPos.x, nextPos.y);
+
+      noBtn.classList.remove("bounce");
+      void noBtn.offsetWidth;
+      noBtn.classList.add("bounce");
+
+      setTimeout(() => {
+        escapeCooldown = false;
+      }, 35);
+    }
+
+    function activateEscapeMode() {
+      escapeMode = true;
+
+      const yesRect = yesBtn.getBoundingClientRect();
+      const areaRect = buttonArea.getBoundingClientRect();
+
+      const avoidPoint = {
+        x: (yesRect.left - areaRect.left) + yesRect.width / 2,
+        y: (yesRect.top - areaRect.top) + yesRect.height / 2
+      };
+
+      escapeNoButton(avoidPoint);
+    }
+
+    function pointerNearButton(clientX, clientY) {
+      if (!escapeMode) return false;
+
+      const rect = noBtn.getBoundingClientRect();
+      const padding = 120;
+
+      return (
+        clientX >= rect.left - padding &&
+        clientX <= rect.right + padding &&
+        clientY >= rect.top - padding &&
+        clientY <= rect.bottom + padding
+      );
+    }
+
+    yesBtn.addEventListener("click", async () => {
+      front.style.display = "none";
+      message.classList.add("show");
+
+      try {
+        bgMusic.currentTime = 0;
+        await bgMusic.play();
+      } catch (error) {
+        console.log("Music could not autoplay:", error);
+      }
+
+      const musicToggleBtn = document.getElementById("musicToggleBtn");
+      if (musicToggleBtn) {
+        musicToggleBtn.addEventListener("click", async () => {
+          if (bgMusic.paused) {
+            try {
+              await bgMusic.play();
+              musicToggleBtn.textContent = "⏸";
+            } catch (error) {
+              console.log("Music could not play:", error);
+            }
+          } else {
+            bgMusic.pause();
+            musicToggleBtn.textContent = "▶";
+          }
+        });
+      }
+    }, { once: true });
+
+    noBtn.addEventListener("click", (e) => {
+      if (escapeMode) {
+        e.preventDefault();
+        return;
+      }
+
+      if (count < messages.length - 1) {
+        count++;
+        noBtn.textContent = messages[count];
+
+        yesScale += 0.18;
+        const glowSize = 24 + (count * 6);
+        const glowAlpha = Math.min(0.18 + count * 0.05, 0.48);
+
+        yesBtn.style.transform = `translateX(-50%) scale(${yesScale})`;
+        yesBtn.style.boxShadow = `
+          0 12px 28px rgba(255, 110, 167, 0.25),
+          0 0 ${glowSize}px rgba(255, 148, 191, ${glowAlpha})
+        `;
+
+        if (count === messages.length - 1) {
+          activateEscapeMode();
+        }
+      }
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (!escapeMode) return;
+
+      if (pointerNearButton(e.clientX, e.clientY)) {
+        const areaRect = buttonArea.getBoundingClientRect();
+        escapeNoButton({
+          x: e.clientX - areaRect.left,
+          y: e.clientY - areaRect.top
+        });
+      }
+    });
+
+    document.addEventListener("touchstart", (e) => {
+      if (!escapeMode || !e.touches.length) return;
+
+      const touch = e.touches[0];
+      if (pointerNearButton(touch.clientX, touch.clientY)) {
+        e.preventDefault();
+        const areaRect = buttonArea.getBoundingClientRect();
+        escapeNoButton({
+          x: touch.clientX - areaRect.left,
+          y: touch.clientY - areaRect.top
+        });
+      }
+    }, { passive: false });
+
+    document.addEventListener("touchmove", (e) => {
+      if (!escapeMode || !e.touches.length) return;
+
+      const touch = e.touches[0];
+      if (pointerNearButton(touch.clientX, touch.clientY)) {
+        e.preventDefault();
+        const areaRect = buttonArea.getBoundingClientRect();
+        escapeNoButton({
+          x: touch.clientX - areaRect.left,
+          y: touch.clientY - areaRect.top
+        });
+      }
+    }, { passive: false });
+
+    function createFloatingSymbol() {
+      const symbols = ["🌸", "✨", "✝️", "💖", "🕊️"];
+      const el = document.createElement("div");
+      el.className = "floating";
+      el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      el.style.left = Math.random() * 100 + "vw";
+      el.style.fontSize = (18 + Math.random() * 18) + "px";
+      el.style.animationDuration = (6 + Math.random() * 5) + "s";
+      document.body.appendChild(el);
+
+      setTimeout(() => el.remove(), 11000);
+    }
+
+    setInterval(createFloatingSymbol, 700);
+  </script>
+</body>
+</html>
